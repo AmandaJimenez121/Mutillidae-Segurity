@@ -9,6 +9,15 @@
         }
     }
 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            error_log("CSRF token validation failed for login attempt from IP: " . $_SERVER['REMOTE_ADDR']);
+            logMessage("CSRF token validation failed");
+            header("Location: index.php?page=login.php&error=csrf");
+            exit();
+        }
+    }
+
     try {
         $lQueryString = "";
         switch ($_SESSION["security-level"]) {
